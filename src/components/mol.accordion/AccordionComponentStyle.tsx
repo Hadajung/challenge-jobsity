@@ -12,5 +12,5 @@ export const AccordionHeader = styled.View({
 });
 
 export const AccordionBody = styled.View({
-  flex: 1,
+  // flex: 1,
 });

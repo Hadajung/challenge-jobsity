@@ -12,6 +12,7 @@ interface ListComponentProps {
   footerLoading?: boolean;
   loading?: boolean;
   onPressItem?: (props: any) => void;
+  type: 'show' | 'episode';
 }
 
 export const ListComponent: React.FC<ListComponentProps> = ({
@@ -21,6 +22,7 @@ export const ListComponent: React.FC<ListComponentProps> = ({
   footerLoading,
   loading,
   onPressItem,
+  type,
 }) => {
   const navigation = useNavigation();
   if (loading && !footerLoading) return <ListLoadingComponent />;
@@ -47,6 +49,7 @@ export const ListComponent: React.FC<ListComponentProps> = ({
         return (
           <Card
             key={item.id}
+            type={type}
             source={
               item.image &&
               item.image.medium && {

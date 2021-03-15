@@ -8,16 +8,18 @@ export interface CardComponentProps {
   source: ImageSourcePropType;
   title?: string | null;
   onPress?: () => void;
+  type: 'show' | 'episode';
 }
 
 export const CardComponent: React.FC<CardComponentProps> = ({
   title,
   onPress,
   source,
+  type,
 }) => {
   return (
     <Container onPress={onPress}>
-      <Poster source={source} />
+      <Poster source={source} height={type === 'episode' ? 60 : 160} />
       <Text preset="cardTitle" numberOfLines={2}>
         {title}
       </Text>
