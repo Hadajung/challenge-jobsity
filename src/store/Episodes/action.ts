@@ -20,6 +20,7 @@ export const actions = {
   }),
   listEpisodes: (id: number) => {
     return (dispatch) => {
+      dispatch(actions.setShowEpisodes({showId: id, episodes: []}));
       dispatch(LoadingActions.actions.setLoading(true));
       return listEpisodes(id).then(
         (response) => {
