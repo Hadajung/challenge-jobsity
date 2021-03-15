@@ -8,31 +8,37 @@
  * @format
  */
 
-import React from 'react';
-import {
-  SafeAreaView,
-  StyleSheet,
-  ScrollView,
-  View,
-  Text,
-  StatusBar,
-} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {SafeAreaView, StyleSheet} from 'react-native';
 import {Provider} from 'react-redux';
-
-import {
-  Header,
-  LearnMoreLinks,
-  Colors,
-  DebugInstructions,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
-import {HomeScreen} from './src/screens/';
+import NetInfo from '@react-native-community/netinfo';
 import {store} from './src/store';
 import AppNavigation from './src/navigation';
+import {OfflineScreen} from './src/screens';
 
 declare const global: {HermesInternal: null | {}};
 
+let currentNetwork: boolean | null;
+
+NetInfo.fetch().then((state) => {
+  currentNetwork = state.isConnected;
+});
+
 const App = () => {
+  const [netInfo, setNetInfo] = useState(currentNetwork);
+
+  useEffect(() => {
+    const unsubscribe = NetInfo.addEventListener((state) => {
+      // console.log("Connection type", state.type);
+      // console.log("Is connected?", state.isConnected);
+      setNetInfo(state.isConnected && state.isInternetReachable);
+    });
+    return () => unsubscribe();
+  }, []);
+
+  if (!netInfo) {
+    return <OfflineScreen />;
+  }
   return (
     <>
       <Provider store={store}>
@@ -43,44 +49,5 @@ const App = () => {
     </>
   );
 };
-
-const styles = StyleSheet.create({
-  scrollView: {
-    backgroundColor: Colors.lighter,
-  },
-  engine: {
-    position: 'absolute',
-    right: 0,
-  },
-  body: {
-    backgroundColor: Colors.white,
-  },
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-    color: Colors.black,
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-    color: Colors.dark,
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-  footer: {
-    color: Colors.dark,
-    fontSize: 12,
-    fontWeight: '600',
-    padding: 4,
-    paddingRight: 12,
-    textAlign: 'right',
-  },
-});
 
 export default App;

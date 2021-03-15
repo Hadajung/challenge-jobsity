@@ -6,3 +6,4 @@ export {default as Card} from './mol.card';
 export {default as List} from './org.list';
 export {default as Accordion} from './mol.accordion';
 export {default as Modal} from './atm.modal';
+export {default as ErrorComponent} from './org.error';
