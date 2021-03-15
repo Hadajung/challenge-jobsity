@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {connect} from 'react-redux';
-import {FlatList, Modal} from 'react-native';
-import {Button, Poster, Text, Accordion, List} from '../../components';
+import {FlatList} from 'react-native';
+import {Button, Poster, Text, Accordion, List, Modal} from '../../components';
 import {
   Container,
   Header,
@@ -11,12 +11,13 @@ import {
   EpisodeContainer,
   EpisodeTitle,
   Border,
+  EpisodeLoading,
+  ModalInformationContainer,
 } from './ShowDetailScreenStyle';
-import {ShowDetail} from '../../components/org.list/ListComponent';
+import {ShowDetail} from '../../interfaces/show.types';
 import {SystemIcons, Colors} from '../../constants/theme';
-import {SHOW_LIST} from '../../constants/mock';
 import {EpisodesActions, MyListActions} from '../../store/actions';
-import {Episode} from '../../interfaces/episode.types';
+import {Episode, ShowEpisodes} from '../../interfaces/episode.types';
 
 const cleanHTML = (text: string) => {
   const regex = /(<([^>]+)>)/gi;
@@ -24,63 +25,76 @@ const cleanHTML = (text: string) => {
   return result;
 };
 
-const ShowDetailScreen: React.FC<ShowDetail> = (props) => {
-  console.log(props);
+interface ShowDetailScreenProps {
+  myList: ShowDetail[] | [];
+  dispatch: void;
+  route: {
+    params?: ShowDetail;
+  };
+  showEpisodes?: ShowEpisodes;
+  loading?: boolean;
+}
+
+const ShowDetailScreen: React.FC<ShowDetailScreenProps> = (props) => {
   const {
     dispatch,
     route: {params: listItem},
     myList,
     showEpisodes,
+    loading,
   } = props;
+  console.log('showEpisodes', showEpisodes);
   const [inMyList, isInMyList] = useState<boolean>(false);
   const [selectedEpisode, setSelectedEpisode] = useState<Episode | null>(null);
-
-  console.log('showEpisodes', selectedEpisode);
 
   useEffect(() => {
     dispatch(EpisodesActions.actions.listEpisodes(listItem.id));
   }, []);
 
   useEffect(() => {
-    if (myList.find((item) => item.id === listItem.id)) {
+    if (myList.find((item: ShowDetail) => item.id === listItem.id)) {
       isInMyList(true);
     } else {
       isInMyList(false);
     }
-  }, [myList]);
-
+  }, [myList, listItem]);
+  console.log(selectedEpisode);
   const {image, summary, name, schedule, genres} = listItem;
 
   return (
     <>
-      <Modal visible={!!selectedEpisode} transparent>
-        {/* <ModalOverlay /> */}
-        <Container>
-          <Header>
-            <Poster
-              source={
-                selectedEpisode &&
-                selectedEpisode.image &&
-                selectedEpisode?.image.medium && {
-                  uri: selectedEpisode.image.medium,
-                }
+      <Modal
+        visible={!!selectedEpisode}
+        closeModal={() => {
+          console.log('???');
+          setSelectedEpisode(null);
+        }}>
+        <Header>
+          <Poster
+            source={
+              selectedEpisode &&
+              selectedEpisode.image &&
+              selectedEpisode?.image.medium && {
+                uri: selectedEpisode.image.medium,
               }
-            />
-            <InformationContainer>
-              <Text preset="desc">{selectedEpisode?.name}</Text>
-              <Text preset="desc">
-                S {selectedEpisode?.season} EP {selectedEpisode?.number}
-              </Text>
-              {/* <Text preset="desc">{genres.join()}</Text> */}
-            </InformationContainer>
-          </Header>
-
-          <Body>
-            <Text preset="desc">
-              {cleanHTML(selectedEpisode?.summary || '')}
+            }
+          />
+          <ModalInformationContainer>
+            <Text preset="desc" color={Colors.Black}>
+              {selectedEpisode?.name}
             </Text>
-          </Body>
-        </Container>
+            <Text preset="desc" color={Colors.Black}>
+              S {selectedEpisode?.season} EP {selectedEpisode?.number}
+            </Text>
+          </ModalInformationContainer>
+        </Header>
+        <Body>
+          <Text preset="desc" color={Colors.Black}>
+            {selectedEpisode
+              ? selectedEpisode?.summary && cleanHTML(selectedEpisode?.summary)
+              : ''}
+          </Text>
+        </Body>
       </Modal>
       <Container showsVerticalScrollIndicator={false}>
         <Header>
@@ -117,23 +131,26 @@ const ShowDetailScreen: React.FC<ShowDetail> = (props) => {
           </InformationContainer>
         </Header>
         <Body>
-          <Text preset="desc">{cleanHTML(summary)}</Text>
+          <Text preset="desc">
+            {listItem.summary ? cleanHTML(summary) : '-'}
+          </Text>
           <EpisodeContainer>
             <EpisodeTitle>
               <Border>
-                <Text preset="bold" style={{textAlign: 'center'}}>
+                <Text preset="semibold" style={{textAlign: 'center'}}>
                   Episodes
                 </Text>
               </Border>
             </EpisodeTitle>
             {/* <View style={{flex: 1}}> */}
             <FlatList
-              // contentContainerStyle={{flex: 1}}
-              data={showEpisodes.episodes}
+              data={(showEpisodes && showEpisodes.episodes) || []}
+              ListFooterComponent={() => loading && <EpisodeLoading />}
               renderItem={(season) => {
                 return (
                   <Accordion title={`Season ${season.item[0].season}`}>
                     <List
+                      type={'episode'}
                       list={season.item}
                       onPressItem={(item) => setSelectedEpisode(item)}
                     />
@@ -150,6 +167,7 @@ const ShowDetailScreen: React.FC<ShowDetail> = (props) => {
 };
 
 export default connect((state) => ({
+  loading: state.loading,
   myList: state.myList,
   showEpisodes: state.showEpisodes,
 }))(ShowDetailScreen);

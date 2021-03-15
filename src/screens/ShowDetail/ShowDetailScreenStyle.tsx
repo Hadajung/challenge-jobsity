@@ -1,4 +1,11 @@
+import React from 'react';
 import styled from 'styled-components/native';
+import {
+  Placeholder,
+  PlaceholderMedia,
+  PlaceholderLine,
+  Fade,
+} from 'rn-placeholder';
 import {Colors} from '../../constants/theme';
 
 export const Container = styled.ScrollView.attrs({
@@ -43,3 +50,29 @@ export const Border = styled.View({
   borderBottomColor: Colors.Red,
   width: 60,
 });
+
+export const ModalInformationContainer = styled.View({
+  flexDirection: 'column',
+  marginLeft: 32,
+  paddingTop: 16,
+  paddingBottom: 16,
+});
+
+export const EpisodeLoading: React.FC = () => {
+  return (
+    <Placeholder>
+      <PlaceholderLine
+        height={48}
+        style={{marginTop: 12, marginBottom: 12, backgroundColor: Colors.Gray}}
+      />
+      <PlaceholderLine
+        height={48}
+        style={{marginBottom: 12, backgroundColor: Colors.Gray}}
+      />
+      <PlaceholderLine
+        height={48}
+        style={{marginBottom: 12, backgroundColor: Colors.Gray}}
+      />
+    </Placeholder>
+  );
+};
