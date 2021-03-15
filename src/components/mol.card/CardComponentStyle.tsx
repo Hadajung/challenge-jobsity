@@ -9,7 +9,8 @@ import {
 
 export const Container = styled.TouchableOpacity({
   alignItems: 'center',
-  marginBottom: 16,
+  marginBottom: 8,
+  width: '33%',
 });
 
 export const CardLoadingComponent: React.FC = () => {
