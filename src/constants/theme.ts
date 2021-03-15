@@ -19,6 +19,7 @@ export const SystemIcons = {
   search: require('../../assets/icons/search.png'),
   chevronDown: require('../../assets/icons/chevron-down.png'),
   chevronUp: require('../../assets/icons/chevron-up.png'),
+  close: require('../../assets/icons/close.png'),
 };
 
 export const SystemImages = {
