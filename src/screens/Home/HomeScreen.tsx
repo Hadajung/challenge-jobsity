@@ -32,6 +32,7 @@ const HomeScreen: React.FC<HomeProps> = ({
         list={allShows}
         fetchMore={() => !loading && fetchMoreFunction()}
         footerLoading
+        type="show"
       />
     </Container>
   );

@@ -21,7 +21,7 @@ const MyListScreen: React.FC<MyListScreenProps> = ({myList}) => {
 
   return (
     <Container>
-      <List title="My List" list={myList} />
+      <List title="My List" list={myList} type="show" />
     </Container>
   );
 };

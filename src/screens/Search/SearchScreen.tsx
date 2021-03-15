@@ -37,23 +37,8 @@ const SearchScreen: React.FC<SearchScreenProps> = (props) => {
           }}
           placeholder="Find something..."
           onChangeText={(text) => setSearchText(text)}
+          autoCorrect={false}
         />
-        {/* <View
-          style={{
-            position: 'absolute',
-            right: 0,
-            top: 12,
-            borderWidth: 1,
-            borderColor: '#fff',
-            width: 32,
-            height: 32,
-            justifyContent: 'center',
-            alignItems: 'center',
-          }}>
-          <TouchableWithoutFeedback onPress={() => console.lot('???')}>
-            <Icon source={SystemIcons.close} />
-          </TouchableWithoutFeedback>
-        </View> */}
       </View>
       <View style={{flex: 1, paddingVertical: 16}}>
         {!loading && searchList.length === 1 ? (
