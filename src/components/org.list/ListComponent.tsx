@@ -1,70 +1,70 @@
 import React from 'react';
 import {FlatList} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-import {Card} from '../index';
-import {ListContainer, ListLoadingComponent} from './ListComponentStyle';
+import {Card, Text} from '../index';
+import {EmptyList, ListLoadingComponent} from './ListComponentStyle';
 import {ShowDetail} from '../../interfaces';
 
 interface ListComponentProps {
   list: ShowDetail[];
-  loading?: boolean;
   fetchMore?: () => void;
+  title?: string;
+  footerLoading?: boolean;
+  loading?: boolean;
+  onPressItem?: (props: any) => void;
 }
 
 export const ListComponent: React.FC<ListComponentProps> = ({
   list,
-  loading,
   fetchMore,
+  title,
+  footerLoading,
+  loading,
+  onPressItem,
 }) => {
   const navigation = useNavigation();
-  if (loading) return <ListLoadingComponent />;
+  if (loading && !footerLoading) return <ListLoadingComponent />;
   return (
-    <ListContainer>
-      <FlatList
-        data={list}
-        contentContainerStyle={{
-          flex: 1,
-          flexDirection: 'column',
-        }}
-        columnWrapperStyle={{
-          justifyContent: 'space-between',
-        }}
-        numColumns={3}
-        renderItem={({item}) => {
-          return (
-            <Card
-              key={item.id}
-              source={
-                item.image &&
-                item.image.medium && {
-                  uri: item.image && item.image.medium,
-                }
-              }
-              title={item.name}
-              onPress={() => navigation.navigate('ShowDetailScreen', {...item})}
-            />
-          );
-        }}
-        onEndReached={fetchMore}
-        initialNumToRender={12}
-      />
-      {/* {list.map((listItem) => {
+    <FlatList
+      data={list}
+      contentContainerStyle={{
+        flexDirection: 'column',
+        // padding: 16,
+        // marginBottom: 16,
+      }}
+      columnWrapperStyle={
+        {
+          // justifyContent: 'space-between',
+        }
+      }
+      numColumns={3}
+      ListFooterComponent={() =>
+        footerLoading ? <ListLoadingComponent /> : null
+      }
+      ListHeaderComponent={() => <Text preset="title">{title}</Text>}
+      ListEmptyComponent={() => (!loading ? <EmptyList /> : null)}
+      renderItem={({item}) => {
         return (
           <Card
-            key={listItem.id}
+            key={item.id}
             source={
-              listItem.image &&
-              listItem.image.medium && {
-                uri: listItem.image && listItem.image.medium,
+              item.image &&
+              item.image.medium && {
+                uri: item.image && item.image.medium,
               }
             }
-            title={listItem.name}
-            onPress={() =>
-              navigation.navigate('ShowDetailScreen', {...listItem})
+            title={item.name}
+            onPress={
+              onPressItem
+                ? () => onPressItem(item)
+                : () => navigation.navigate('ShowDetailScreen', {...item})
             }
           />
         );
-      })} */}
-    </ListContainer>
+      }}
+      onEndReachedThreshold={0.5}
+      onEndReached={fetchMore}
+      initialNumToRender={12}
+    />
   );
 };

@@ -6,12 +6,12 @@ import {
   PlaceholderLine,
   Fade,
 } from 'rn-placeholder';
+import {Text} from '../index';
 
 export const ListContainer = styled.View({
   flexDirection: 'row',
   flexWrap: 'wrap',
   justifyContent: 'space-between',
-  padding: 16,
 });
 
 const LoadingContainer = styled.View({
@@ -51,5 +51,19 @@ export const ListLoadingComponent: React.FC = () => {
         <CardLoadingComponent />
       </ListContainer>
     </Placeholder>
+  );
+};
+
+const EmptyContainer = styled.View({
+  flex: 1,
+  justifyContent: 'center',
+  alignItems: 'center',
+});
+
+export const EmptyList: React.FC = () => {
+  return (
+    <EmptyContainer>
+      <Text preset="desc">Nothing here :( </Text>
+    </EmptyContainer>
   );
 };
