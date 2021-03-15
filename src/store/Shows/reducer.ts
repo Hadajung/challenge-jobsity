@@ -1,8 +1,14 @@
 import {ShowsActionType, types} from './types';
 
 const initialState = {
-  allShows: [],
-  searchList: [],
+  allShows: {
+    data: [],
+    error: null,
+  },
+  searchList: {
+    data: [],
+    error: null,
+  },
 };
 
 export default (state = initialState, {type, payload}: ShowsActionType) => {
@@ -10,12 +16,26 @@ export default (state = initialState, {type, payload}: ShowsActionType) => {
     case types.SET_SHOWS_LIST:
       return {
         ...state,
-        allShows: [...state.allShows, ...payload],
+        allShows: {
+          error: null,
+          data: [...state.allShows.data, ...payload],
+        },
       };
     case types.SET_SEARCH_SHOWS_LIST:
       return {
         ...state,
-        searchList: payload,
+        searchList: {
+          data: payload,
+          error: null,
+        },
+      };
+    case types.SET_SHOWS_LIST_ERROR:
+      return {
+        ...state,
+        allShows: {
+          error: payload,
+          data: undefined,
+        },
       };
     default:
       return state;

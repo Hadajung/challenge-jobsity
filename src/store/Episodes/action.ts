@@ -18,12 +18,16 @@ export const actions = {
     type: types.SET_SHOW_EPISODES,
     payload,
   }),
+  setShowEpisodesError: (payload: any): EpisodesActionType => ({
+    type: types.SET_SHOW_EPISODES_ERROR,
+    payload,
+  }),
   listEpisodes: (id: number) => {
     return (dispatch) => {
-      dispatch(actions.setShowEpisodes({showId: id, episodes: []}));
+      dispatch(actions.setShowEpisodesError(null));
       dispatch(LoadingActions.actions.setLoading(true));
-      return listEpisodes(id).then(
-        (response) => {
+      return listEpisodes(id)
+        .then((response) => {
           dispatch(LoadingActions.actions.setLoading(false));
           if (response.status === 200 && response.data) {
             const groupedByArray = groupBySeason(response.data);
@@ -35,9 +39,8 @@ export const actions = {
               }),
             );
           }
-        },
-        (error) => console.log(error),
-      );
+        })
+        .catch((error) => dispatch(actions.setShowEpisodesError(error)));
     };
   },
 };
