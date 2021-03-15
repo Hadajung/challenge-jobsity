@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {ScrollView} from 'react-native';
 import {connect} from 'react-redux';
-import {Text, Button, List} from '../../components';
+import {Text, Button, List, ErrorComponent} from '../../components';
 import {SHOW_LIST} from '../../constants/mock';
 import {SystemIcons} from '../../constants/theme';
 import {Container} from './HomeScreenStyle';
@@ -23,13 +23,19 @@ const HomeScreen: React.FC<HomeProps> = ({
   const fetchMoreFunction = () => {
     setPage(page + 1);
   };
-
+  if (allShows.error) {
+    return (
+      <Container>
+        <ErrorComponent />
+      </Container>
+    );
+  }
   return (
     <Container>
       <List
         title="Explore..."
         loading={loading}
-        list={allShows}
+        list={allShows.data}
         fetchMore={() => !loading && fetchMoreFunction()}
         footerLoading
         type="show"

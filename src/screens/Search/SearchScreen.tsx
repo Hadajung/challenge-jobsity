@@ -1,12 +1,19 @@
 import React, {useState, useEffect} from 'react';
-import {View, TextInput, TouchableWithoutFeedback} from 'react-native';
+import {View, TextInput} from 'react-native';
 import {connect} from 'react-redux';
 import {Colors, SystemIcons} from '../../constants/theme';
-import {Icon, List, Text} from '../../components';
+import {ErrorComponent, Icon, List, Text} from '../../components';
 import {Container} from './SearchScreenStyle';
 import {ShowsActions} from '../../store/actions';
+import {ShowDetail} from '../../interfaces';
 
-interface SearchScreenProps {}
+interface SearchScreenProps {
+  searchList: {
+    error: any;
+    data: ShowDetail[];
+  };
+  loading?: boolean;
+}
 
 const SearchScreen: React.FC<SearchScreenProps> = (props) => {
   const {dispatch, searchList, loading} = props;
@@ -16,7 +23,13 @@ const SearchScreen: React.FC<SearchScreenProps> = (props) => {
     searchText.length > 1 &&
       dispatch(ShowsActions.actions.searchShows(searchText));
   }, [searchText]);
-
+  if (searchList.error) {
+    return (
+      <Container>
+        <ErrorComponent />
+      </Container>
+    );
+  }
   return (
     <Container>
       <View
@@ -41,13 +54,14 @@ const SearchScreen: React.FC<SearchScreenProps> = (props) => {
         />
       </View>
       <View style={{flex: 1, paddingVertical: 16}}>
-        {!loading && searchList.length === 1 ? (
+        {!loading && searchList.data && searchList.data.length === 1 ? (
           <Text preset="title"> 0 results</Text>
         ) : (
           <List
-            title={`${searchList.length} Results`}
-            list={searchList}
+            title={`${searchList.data && searchList.data.length} Results`}
+            list={searchList.data}
             loading={loading}
+            type="show"
           />
         )}
       </View>

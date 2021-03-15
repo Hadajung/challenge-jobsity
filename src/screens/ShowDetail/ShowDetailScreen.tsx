@@ -1,7 +1,15 @@
 import React, {useEffect, useState} from 'react';
 import {connect} from 'react-redux';
 import {FlatList} from 'react-native';
-import {Button, Poster, Text, Accordion, List, Modal} from '../../components';
+import {
+  Button,
+  Poster,
+  Text,
+  Accordion,
+  List,
+  Modal,
+  ErrorComponent,
+} from '../../components';
 import {
   Container,
   Header,
@@ -31,7 +39,10 @@ interface ShowDetailScreenProps {
   route: {
     params?: ShowDetail;
   };
-  showEpisodes?: ShowEpisodes;
+  showEpisodes?: {
+    error: any;
+    data: ShowEpisodes;
+  };
   loading?: boolean;
 }
 
@@ -58,7 +69,7 @@ const ShowDetailScreen: React.FC<ShowDetailScreenProps> = (props) => {
       isInMyList(false);
     }
   }, [myList, listItem]);
-  console.log(selectedEpisode);
+
   const {image, summary, name, schedule, genres} = listItem;
 
   return (
@@ -142,23 +153,30 @@ const ShowDetailScreen: React.FC<ShowDetailScreenProps> = (props) => {
                 </Text>
               </Border>
             </EpisodeTitle>
-            {/* <View style={{flex: 1}}> */}
-            <FlatList
-              data={(showEpisodes && showEpisodes.episodes) || []}
-              ListFooterComponent={() => loading && <EpisodeLoading />}
-              renderItem={(season) => {
-                return (
-                  <Accordion title={`Season ${season.item[0].season}`}>
-                    <List
-                      type={'episode'}
-                      list={season.item}
-                      onPressItem={(item) => setSelectedEpisode(item)}
-                    />
-                  </Accordion>
-                );
-              }}
-            />
-            {/* </View> */}
+            {showEpisodes.error ? (
+              <ErrorComponent />
+            ) : (
+              <FlatList
+                data={
+                  (showEpisodes &&
+                    showEpisodes.data &&
+                    showEpisodes.data.episodes) ||
+                  []
+                }
+                ListFooterComponent={() => loading && <EpisodeLoading />}
+                renderItem={(season) => {
+                  return (
+                    <Accordion title={`Season ${season.item[0].season}`}>
+                      <List
+                        type={'episode'}
+                        list={season.item}
+                        onPressItem={(item) => setSelectedEpisode(item)}
+                      />
+                    </Accordion>
+                  );
+                }}
+              />
+            )}
           </EpisodeContainer>
         </Body>
       </Container>
