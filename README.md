@@ -1,6 +1,6 @@
 # Jobsity Project App
 
-![](simulation.gif)
+![](jobsity_simulation.gif)
 
 ## Where to find apk file
 
