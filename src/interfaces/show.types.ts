@@ -6,14 +6,14 @@ interface Image {
 export interface ShowDetail {
   id: number;
   url?: string | null;
-  name?: string | null;
-  type?: string | null;
-  genres?: string[] | null;
+  name: string | null;
+  type: string | null;
+  genres: string[] | null;
   status?: string | null;
   runtime?: number | null;
   premeired?: string | null;
   officialSite?: string | null;
-  schedule?: {
+  schedule: {
     time?: string | null;
     days?: string[] | null;
   };
@@ -36,8 +36,8 @@ export interface ShowDetail {
     thetvdb?: number | null;
     imdb?: string | null;
   } | null;
-  image?: Image | null;
-  summary?: string | null;
+  image: Image | null;
+  summary: string | null;
   updated?: number | null;
   _links: any;
 }

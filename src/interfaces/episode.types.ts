@@ -18,5 +18,5 @@ export interface Episode {
 
 export interface ShowEpisodes {
   showId: number;
-  episodes: Episode[];
+  episodes: Episode[][];
 }
