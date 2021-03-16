@@ -1,11 +1,6 @@
 import React from 'react';
 import styled from 'styled-components/native';
-import {
-  Placeholder,
-  PlaceholderMedia,
-  PlaceholderLine,
-  Fade,
-} from 'rn-placeholder';
+import {Placeholder, PlaceholderLine} from 'rn-placeholder';
 import {Colors} from '../../constants/theme';
 
 export const Container = styled.ScrollView.attrs({
@@ -20,6 +15,7 @@ export const Container = styled.ScrollView.attrs({
 
 export const Header = styled.View({
   flexDirection: 'row',
+  alignItems: 'center',
 });
 
 export const Body = styled.View({});
@@ -30,6 +26,7 @@ export const InformationContainer = styled.View({
   paddingTop: 16,
   paddingBottom: 16,
   justifyContent: 'space-between',
+  flex: 1,
 });
 
 export const ButtonContainer = styled.View({
@@ -56,6 +53,7 @@ export const ModalInformationContainer = styled.View({
   marginLeft: 32,
   paddingTop: 16,
   paddingBottom: 16,
+  flex: 1,
 });
 
 export const EpisodeLoading: React.FC = () => {

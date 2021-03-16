@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {connect} from 'react-redux';
-import {FlatList} from 'react-native';
+import {FlatList, ScrollView} from 'react-native';
 import {
   Button,
   Poster,
@@ -23,11 +23,12 @@ import {
   ModalInformationContainer,
 } from './ShowDetailScreenStyle';
 import {ShowDetail} from '../../interfaces/show.types';
-import {SystemIcons, Colors} from '../../constants/theme';
+import {SystemIcons, Colors, SystemImages} from '../../constants/theme';
 import {EpisodesActions, MyListActions} from '../../store/actions';
 import {Episode, ShowEpisodes} from '../../interfaces/episode.types';
+import {Store} from '../../interfaces';
 
-const cleanHTML = (text: string) => {
+export const cleanHTML = (text: string) => {
   const regex = /(<([^>]+)>)/gi;
   const result = text.replace(regex, '');
   return result;
@@ -35,15 +36,16 @@ const cleanHTML = (text: string) => {
 
 interface ShowDetailScreenProps {
   myList: ShowDetail[] | [];
-  dispatch: void;
+  dispatch: any;
   route: {
-    params?: ShowDetail;
+    params: ShowDetail;
   };
   showEpisodes?: {
     error: any;
     data: ShowEpisodes;
   };
   loading?: boolean;
+  t: any;
 }
 
 const ShowDetailScreen: React.FC<ShowDetailScreenProps> = (props) => {
@@ -53,14 +55,14 @@ const ShowDetailScreen: React.FC<ShowDetailScreenProps> = (props) => {
     myList,
     showEpisodes,
     loading,
+    t,
   } = props;
-  console.log('showEpisodes', showEpisodes);
   const [inMyList, isInMyList] = useState<boolean>(false);
   const [selectedEpisode, setSelectedEpisode] = useState<Episode | null>(null);
 
   useEffect(() => {
     dispatch(EpisodesActions.actions.listEpisodes(listItem.id));
-  }, []);
+  }, [dispatch, listItem]);
 
   useEffect(() => {
     if (myList.find((item: ShowDetail) => item.id === listItem.id)) {
@@ -71,61 +73,65 @@ const ShowDetailScreen: React.FC<ShowDetailScreenProps> = (props) => {
   }, [myList, listItem]);
 
   const {image, summary, name, schedule, genres} = listItem;
-
   return (
     <>
       <Modal
         visible={!!selectedEpisode}
-        closeModal={() => {
-          console.log('???');
-          setSelectedEpisode(null);
-        }}>
-        <Header>
-          <Poster
-            source={
-              selectedEpisode &&
-              selectedEpisode.image &&
-              selectedEpisode?.image.medium && {
-                uri: selectedEpisode.image.medium,
+        closeModal={() => setSelectedEpisode(null)}>
+        <ScrollView>
+          <Header>
+            <Poster
+              source={
+                (selectedEpisode &&
+                  selectedEpisode.image &&
+                  selectedEpisode?.image.medium && {
+                    uri: selectedEpisode.image.medium,
+                  }) ||
+                SystemImages.preview
               }
-            }
-          />
-          <ModalInformationContainer>
+              height={60}
+              width="30%"
+            />
+            <ModalInformationContainer>
+              <Text preset="desc" color={Colors.Black}>
+                {selectedEpisode?.name}
+              </Text>
+              <Text preset="desc" color={Colors.Black}>
+                S {selectedEpisode?.season} EP {selectedEpisode?.number}
+              </Text>
+            </ModalInformationContainer>
+          </Header>
+          <Body>
             <Text preset="desc" color={Colors.Black}>
-              {selectedEpisode?.name}
+              {selectedEpisode
+                ? selectedEpisode?.summary &&
+                  cleanHTML(selectedEpisode?.summary)
+                : ''}
             </Text>
-            <Text preset="desc" color={Colors.Black}>
-              S {selectedEpisode?.season} EP {selectedEpisode?.number}
-            </Text>
-          </ModalInformationContainer>
-        </Header>
-        <Body>
-          <Text preset="desc" color={Colors.Black}>
-            {selectedEpisode
-              ? selectedEpisode?.summary && cleanHTML(selectedEpisode?.summary)
-              : ''}
-          </Text>
-        </Body>
+          </Body>
+        </ScrollView>
       </Modal>
       <Container showsVerticalScrollIndicator={false}>
         <Header>
           <Poster
+            width="30%"
             source={
-              image &&
-              image.medium && {
-                uri: image.medium,
-              }
+              (image &&
+                image.medium && {
+                  uri: image.medium,
+                }) ||
+              SystemImages.preview
             }
           />
           <InformationContainer>
             <Text preset="desc">{name}</Text>
             <Text preset="desc">
-              {schedule.time} {schedule.days.join()}
+              {schedule.time} {schedule.days && schedule.days.join()}
             </Text>
-            <Text preset="desc">{genres.join()}</Text>
+            <Text preset="desc">{genres && genres.join()}</Text>
             <ButtonContainer>
               <Button
-                title="My List"
+                title={t('myList')}
                 icon={SystemIcons.heart}
                 tintColor={inMyList ? Colors.Red : Colors.White}
                 onPress={() =>
@@ -142,19 +148,17 @@ const ShowDetailScreen: React.FC<ShowDetailScreenProps> = (props) => {
           </InformationContainer>
         </Header>
         <Body>
-          <Text preset="desc">
-            {listItem.summary ? cleanHTML(summary) : '-'}
-          </Text>
+          <Text preset="desc">{summary ? cleanHTML(summary) : '-'}</Text>
           <EpisodeContainer>
             <EpisodeTitle>
               <Border>
                 <Text preset="semibold" style={{textAlign: 'center'}}>
-                  Episodes
+                  {t('episodes')}
                 </Text>
               </Border>
             </EpisodeTitle>
-            {showEpisodes.error ? (
-              <ErrorComponent />
+            {showEpisodes && showEpisodes.error ? (
+              <ErrorComponent message={t('error')} />
             ) : (
               <FlatList
                 data={
@@ -163,14 +167,16 @@ const ShowDetailScreen: React.FC<ShowDetailScreenProps> = (props) => {
                     showEpisodes.data.episodes) ||
                   []
                 }
-                ListFooterComponent={() => loading && <EpisodeLoading />}
-                renderItem={(season) => {
+                ListFooterComponent={() =>
+                  loading ? <EpisodeLoading /> : null
+                }
+                renderItem={({item}) => {
                   return (
-                    <Accordion title={`Season ${season.item[0].season}`}>
+                    <Accordion title={`Season ${item[0].season}`}>
                       <List
                         type={'episode'}
-                        list={season.item}
-                        onPressItem={(item) => setSelectedEpisode(item)}
+                        list={item}
+                        onPressItem={(episode) => setSelectedEpisode(episode)}
                       />
                     </Accordion>
                   );
@@ -184,30 +190,35 @@ const ShowDetailScreen: React.FC<ShowDetailScreenProps> = (props) => {
   );
 };
 
-export default connect((state) => ({
+export default connect((state: Store) => ({
   loading: state.loading,
   myList: state.myList,
   showEpisodes: state.showEpisodes,
 }))(ShowDetailScreen);
 
 ShowDetailScreen.defaultProps = {
-  id: 0,
-  url: '-',
-  name: '-',
-  type: '-',
-  genres: [],
-  status: '-',
-  runtime: 0,
-  premeired: '-',
-  officialSite: '-',
-  schedule: {
-    time: '-',
-    days: [],
+  route: {
+    params: {
+      id: 0,
+      url: '-',
+      name: '-',
+      type: '-',
+      genres: [],
+      status: '-',
+      runtime: 0,
+      premeired: '-',
+      officialSite: '-',
+      schedule: {
+        time: '-',
+        days: [],
+      },
+      rating: {
+        average: 0,
+      },
+      image: null,
+      summary: '-',
+      updated: 0,
+      _links: null,
+    },
   },
-  rating: {
-    average: 0,
-  },
-  image: null,
-  summary: '-',
-  updated: 0,
 };

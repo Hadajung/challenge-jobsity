@@ -1,31 +1,22 @@
-import React, {useEffect, useState} from 'react';
-import {ScrollView} from 'react-native';
+import React from 'react';
 import {connect} from 'react-redux';
-import {Text, Button, List} from '../../components';
-import {SHOW_LIST} from '../../constants/mock';
-import {SystemIcons} from '../../constants/theme';
+import {List} from '../../components';
+import {ShowDetail, Store} from '../../interfaces';
 import {Container} from '../Home/HomeScreenStyle';
-import {ShowsActions} from '../../store/actions';
 
-interface MyListScreenProps {}
+interface MyListScreenProps {
+  myList: ShowDetail[];
+  t: any;
+}
 
-const MyListScreen: React.FC<MyListScreenProps> = ({myList}) => {
-  const [page, setPage] = useState<number>(0);
-  useEffect(() => {
-    // dispatch(ShowsActions.actions.getShowsList(page));
-  }, [page]);
-
-  const fetchMoreFunction = () => {
-    setPage(page + 1);
-  };
-
+const MyListScreen: React.FC<MyListScreenProps> = ({myList, t}) => {
   return (
     <Container>
-      <List title="My List" list={myList} type="show" />
+      <List title={t('myList')} list={myList} type="show" />
     </Container>
   );
 };
 
-export default connect((state) => ({
+export default connect((state: Store) => ({
   myList: state.myList,
 }))(MyListScreen);

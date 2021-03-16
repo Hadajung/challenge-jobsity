@@ -5,7 +5,7 @@ import {Colors, SystemIcons} from '../../constants/theme';
 import {ErrorComponent, Icon, List, Text} from '../../components';
 import {Container} from './SearchScreenStyle';
 import {ShowsActions} from '../../store/actions';
-import {ShowDetail} from '../../interfaces';
+import {ShowDetail, Store} from '../../interfaces';
 
 interface SearchScreenProps {
   searchList: {
@@ -13,20 +13,26 @@ interface SearchScreenProps {
     data: ShowDetail[];
   };
   loading?: boolean;
+  dispatch: any;
+  t: any;
 }
 
 const SearchScreen: React.FC<SearchScreenProps> = (props) => {
-  const {dispatch, searchList, loading} = props;
+  const {dispatch, searchList, loading, t} = props;
 
   const [searchText, setSearchText] = useState<string>('');
   useEffect(() => {
-    searchText.length > 1 &&
+    if (searchText.length > 1) {
       dispatch(ShowsActions.actions.searchShows(searchText));
-  }, [searchText]);
+    }
+    if (searchText.length === 0) {
+      dispatch(ShowsActions.actions.setSearchShowsList([]));
+    }
+  }, [searchText, dispatch]);
   if (searchList.error) {
     return (
       <Container>
-        <ErrorComponent />
+        <ErrorComponent message={t('error')} />
       </Container>
     );
   }
@@ -48,17 +54,19 @@ const SearchScreen: React.FC<SearchScreenProps> = (props) => {
             fontSize: 14,
             width: '80%',
           }}
-          placeholder="Find something..."
+          placeholder={t('searchPlaceholder')}
           onChangeText={(text) => setSearchText(text)}
           autoCorrect={false}
         />
       </View>
       <View style={{flex: 1, paddingVertical: 16}}>
         {!loading && searchList.data && searchList.data.length === 1 ? (
-          <Text preset="title"> 0 results</Text>
+          <Text preset="title"> 0 {t('results')}</Text>
         ) : (
           <List
-            title={`${searchList.data && searchList.data.length} Results`}
+            title={`${searchList.data && searchList.data.length} ${t(
+              'results',
+            )}`}
             list={searchList.data}
             loading={loading}
             type="show"
@@ -69,7 +77,7 @@ const SearchScreen: React.FC<SearchScreenProps> = (props) => {
   );
 };
 
-export default connect((state) => ({
+export default connect((state: Store) => ({
   loading: state.loading,
   searchList: state.shows.searchList,
 }))(SearchScreen);

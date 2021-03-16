@@ -1,24 +1,26 @@
 import React, {useEffect, useState} from 'react';
-import {ScrollView} from 'react-native';
 import {connect} from 'react-redux';
-import {Text, Button, List, ErrorComponent} from '../../components';
-import {SHOW_LIST} from '../../constants/mock';
-import {SystemIcons} from '../../constants/theme';
+import {List, ErrorComponent} from '../../components';
 import {Container} from './HomeScreenStyle';
 import {ShowsActions} from '../../store/actions';
+import {ShowDetail, Store} from '../../interfaces';
 
-interface HomeProps {}
+interface HomeProps {
+  allShows: {
+    error: any;
+    data: ShowDetail[];
+  };
+  loading?: boolean;
+  dispatch: any;
+  t: any;
+}
 
-const HomeScreen: React.FC<HomeProps> = ({
-  navigation,
-  allShows,
-  loading,
-  dispatch,
-}) => {
+const HomeScreen: React.FC<HomeProps> = (props) => {
+  const {allShows, loading, dispatch, t} = props;
   const [page, setPage] = useState<number>(0);
   useEffect(() => {
     dispatch(ShowsActions.actions.getShowsList(page));
-  }, [page]);
+  }, [page, dispatch]);
 
   const fetchMoreFunction = () => {
     setPage(page + 1);
@@ -26,14 +28,14 @@ const HomeScreen: React.FC<HomeProps> = ({
   if (allShows.error) {
     return (
       <Container>
-        <ErrorComponent />
+        <ErrorComponent message={t('error')} />
       </Container>
     );
   }
   return (
     <Container>
       <List
-        title="Explore..."
+        title={t('explore')}
         loading={loading}
         list={allShows.data}
         fetchMore={() => !loading && fetchMoreFunction()}
@@ -44,7 +46,7 @@ const HomeScreen: React.FC<HomeProps> = ({
   );
 };
 
-export default connect((state) => ({
+export default connect((state: Store) => ({
   allShows: state.shows.allShows,
   loading: state.loading,
 }))(HomeScreen);
