@@ -15,6 +15,7 @@ import NetInfo from '@react-native-community/netinfo';
 import {store} from './src/store';
 import AppNavigation from './src/navigation';
 import {OfflineScreen} from './src/screens';
+import i18n from './src/service/i18n';
 
 declare const global: {HermesInternal: null | {}};
 
@@ -25,6 +26,7 @@ NetInfo.fetch().then((state) => {
 });
 
 const App = () => {
+  const initI18n = i18n;
   const [netInfo, setNetInfo] = useState(currentNetwork);
 
   useEffect(() => {
