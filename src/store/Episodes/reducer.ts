@@ -1,4 +1,3 @@
-import {ShowEpisodes} from '../../interfaces/episode.types';
 import {EpisodesActionType, types} from './types';
 
 const initialState = {

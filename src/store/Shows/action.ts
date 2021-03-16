@@ -21,7 +21,7 @@ export const actions = {
     payload,
   }),
   getShowsList: (page: number) => {
-    return (dispatch) => {
+    return (dispatch: any) => {
       dispatch(LoadingActions.actions.setLoading(true));
       return fetchShowsWithPage(page)
         .then((response) => {
@@ -40,7 +40,7 @@ export const actions = {
     };
   },
   searchShows: (text: string) => {
-    return (dispatch) => {
+    return (dispatch: any) => {
       dispatch(LoadingActions.actions.setLoading(true));
       return searchShows(text)
         .then((response) => {

@@ -1,11 +1,11 @@
 import {types, EpisodesActionType} from './types';
-import {ShowEpisodes} from '../../interfaces/episode.types';
+import {Episode, ShowEpisodes} from '../../interfaces/episode.types';
 import {LoadingActions} from '../actions';
 import {listEpisodes} from '../../service';
 
-const groupBy = (key) => (array) =>
+const groupBy = (key: string) => (array: Episode[]) =>
   array.reduce(
-    (objectsByKeyValue, obj) => ({
+    (objectsByKeyValue: any, obj: any) => ({
       ...objectsByKeyValue,
       [obj[key]]: (objectsByKeyValue[obj[key]] || []).concat(obj),
     }),
@@ -23,7 +23,7 @@ export const actions = {
     payload,
   }),
   listEpisodes: (id: number) => {
-    return (dispatch) => {
+    return (dispatch: any) => {
       dispatch(actions.setShowEpisodesError(null));
       dispatch(LoadingActions.actions.setLoading(true));
       return listEpisodes(id)
