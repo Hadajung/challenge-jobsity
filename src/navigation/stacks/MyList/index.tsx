@@ -4,14 +4,15 @@ import {MyListScreen, ShowDetailScreen} from '../../../screens';
 
 const MyListStack = createStackNavigator();
 
-const MyListStackScreen = () => {
+const MyListStackScreen = (StackProps: any) => {
   return (
     <MyListStack.Navigator screenOptions={{headerShown: false}}>
-      <MyListStack.Screen name="MyList" component={MyListScreen} />
-      <MyListStack.Screen
-        name="ShowDetailScreen"
-        component={ShowDetailScreen}
-      />
+      <MyListStack.Screen name="MyList">
+        {(props: any) => <MyListScreen {...{...props, ...StackProps}} />}
+      </MyListStack.Screen>
+      <MyListStack.Screen name="ShowDetailScreen">
+        {(props: any) => <ShowDetailScreen {...{...props, ...StackProps}} />}
+      </MyListStack.Screen>
     </MyListStack.Navigator>
   );
 };

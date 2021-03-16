@@ -10,3 +10,11 @@ const Config = {
 };
 
 export default Config;
+
+export const StackConfig = {
+  headerStyle: {
+    backgroundColor: Colors.Black,
+  },
+  headerTitle: '',
+  headerTintColor: 'white',
+};
