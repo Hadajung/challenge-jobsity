@@ -26,9 +26,9 @@ export const AccordionComponent: React.FC<AccordionComponentProps> = ({
             {title}
           </Text>
           {isActive ? (
-            <Icon source={SystemIcons.chevronUp} width={16} height={16} />
+            <Icon source={SystemIcons.chevronUp} width={12} height={12} />
           ) : (
-            <Icon source={SystemIcons.chevronDown} width={16} height={16} />
+            <Icon source={SystemIcons.chevronDown} width={12} height={12} />
           )}
         </AccordionHeader>
       </TouchableWithoutFeedback>

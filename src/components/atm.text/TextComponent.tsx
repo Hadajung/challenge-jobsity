@@ -1,9 +1,8 @@
 import React from 'react';
 import {Text, TextProps} from 'react-native';
-import styled from 'styled-components/native';
-import {Fonts, Colors} from '../../constants/theme';
+import {Fonts} from '../../constants/theme';
 
-type preset = 'title' | 'desc' | 'semibold' | 'small' | 'cardTitle';
+type preset = 'title' | 'desc' | 'semibold' | 'bold' | 'small' | 'cardTitle';
 
 interface BaseTypographyProps extends TextProps {
   preset: preset;
@@ -25,6 +24,11 @@ const getTextStyles = (preset: preset) => {
     semibold: {
       fontSize: 14,
       fontFamily: Fonts.MulishSemiBold,
+      lineHeight: 16,
+    },
+    bold: {
+      fontSize: 14,
+      fontFamily: Fonts.MulishBold,
       lineHeight: 16,
     },
     small: {

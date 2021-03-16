@@ -11,6 +11,7 @@ export const Container = styled.TouchableOpacity({
   alignItems: 'center',
   marginBottom: 8,
   width: '33%',
+  paddingHorizontal: 4,
 });
 
 export const CardLoadingComponent: React.FC = () => {

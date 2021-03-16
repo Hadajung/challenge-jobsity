@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components/native';
+import {useTranslation} from 'react-i18next';
 import {
   Placeholder,
   PlaceholderMedia,
@@ -61,9 +62,10 @@ const EmptyContainer = styled.View({
 });
 
 export const EmptyList: React.FC = () => {
+  const {t} = useTranslation();
   return (
     <EmptyContainer>
-      <Text preset="desc">Nothing here :( </Text>
+      <Text preset="desc">{t('noResult')}</Text>
     </EmptyContainer>
   );
 };

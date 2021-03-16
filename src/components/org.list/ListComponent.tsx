@@ -3,10 +3,10 @@ import {FlatList} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {Card, Text} from '../index';
 import {EmptyList, ListLoadingComponent} from './ListComponentStyle';
-import {ShowDetail} from '../../interfaces';
+import {SystemImages} from '../../constants/theme';
 
 interface ListComponentProps {
-  list: ShowDetail[];
+  list: any[];
   fetchMore?: () => void;
   title?: string;
   footerLoading?: boolean;
@@ -31,14 +31,7 @@ export const ListComponent: React.FC<ListComponentProps> = ({
       data={list}
       contentContainerStyle={{
         flexDirection: 'column',
-        // padding: 16,
-        // marginBottom: 16,
       }}
-      columnWrapperStyle={
-        {
-          // justifyContent: 'space-between',
-        }
-      }
       numColumns={3}
       ListFooterComponent={() =>
         footerLoading ? <ListLoadingComponent /> : null
@@ -51,10 +44,11 @@ export const ListComponent: React.FC<ListComponentProps> = ({
             key={item.id}
             type={type}
             source={
-              item.image &&
-              item.image.medium && {
-                uri: item.image && item.image.medium,
-              }
+              (item.image &&
+                item.image.medium && {
+                  uri: item.image && item.image.medium,
+                }) ||
+              SystemImages.preview
             }
             title={item.name}
             onPress={

@@ -13,7 +13,7 @@ export const Poster: React.FC<IconProps> = (props) => {
       source={props.source}
       resizeMode="contain"
       style={{
-        width: props.width || 104,
+        width: props.width || '100%',
         height: props.height || 160,
         borderRadius: 16,
       }}
